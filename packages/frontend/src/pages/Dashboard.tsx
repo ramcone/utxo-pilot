@@ -5,6 +5,7 @@ import { useWalletStore } from '../store/walletStore';
 import { api } from '../api/client';
 import FeePanel from '../components/FeePanel';
 import FeeRateChart from '../components/FeeRateChart';
+import FiatValue from '../components/FiatValue';
 
 function satsDisplay(sats: number) {
   if (sats >= 100_000_000) return `${(sats / 1e8).toFixed(8)} BTC`;
@@ -135,6 +136,7 @@ export default function Dashboard() {
           <div className="card-value" style={{ fontSize: '1.3rem' }}>
             {satsDisplay(balance?.confirmed_balance ?? 0)}
           </div>
+          <FiatValue sats={balance?.confirmed_balance ?? 0} display="block" />
         </div>
         <div className="card">
           <div className="card-title">UTXOs</div>

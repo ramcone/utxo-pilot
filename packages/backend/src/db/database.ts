@@ -146,7 +146,8 @@ const MIGRATIONS: [string, string][] = [
       ('esplora_is_public', 'true'),
       ('dust_threshold', '1000'),
       ('small_utxo_threshold', '10000'),
-      ('default_gap_limit', '20');
+      ('default_gap_limit', '20'),
+      ('fiat_currency', 'USD');
     `,
   ],
 ];

@@ -143,3 +143,15 @@ Error: connect ECONNREFUSED ::1:3001
 [2m10:32:35 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/Layout.tsx[22m
 [2m10:35:12 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
 [2m10:35:41 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ConsolidationPlanner.tsx[22m
+[2m11:28:54 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Settings.tsx[22m
+[2m11:29:00 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Settings.tsx[22m
+[2m11:29:10 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Settings.tsx[22m
+[2m11:29:20 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Settings.tsx[22m
+[2m11:29:38 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.tsx[22m
+[2m11:29:43 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.tsx[22m
+[2m11:29:48 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/UTXOTable.tsx[22m
+[2m11:29:52 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/UTXOTable.tsx[22m
+[2m11:29:56 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/SpendPlanner.tsx[22m
+[2m11:30:03 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/SpendPlanner.tsx[22m
+[2m11:30:09 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ConsolidationPlanner.tsx[22m
+[2m11:30:16 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ConsolidationPlanner.tsx[22m

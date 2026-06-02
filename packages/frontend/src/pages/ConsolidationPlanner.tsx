@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useWalletStore } from '../store/walletStore';
 import { usePlanStore } from '../store/planStore';
 import { api } from '../api/client';
+import FiatValue from '../components/FiatValue';
 
 export default function ConsolidationPlanner() {
   const { activeWalletId } = useWalletStore();
@@ -104,6 +105,9 @@ export default function ConsolidationPlanner() {
                 {balance?.small_utxo_count ?? 0} UTXOs
               </strong>{' '}
               at or below the current default threshold.
+              {balance?.confirmed_balance != null && (
+                <span> Total balance: {balance.confirmed_balance.toLocaleString()} sats<FiatValue sats={balance.confirmed_balance} /></span>
+              )}
             </div>
           </div>
         </div>

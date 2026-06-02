@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
 import { UTXO } from '../types';
+import FiatValue from './FiatValue';
 
 function fmt(sats: number) {
   if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(4)} BTC`;
@@ -148,6 +149,7 @@ export default function UTXOTable({ walletId }: Props) {
                   <td className="mono" style={{ fontSize: '0.78rem' }}>{truncate(u.address)}</td>
                   <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
                     {fmt(u.amount)}
+                    <FiatValue sats={u.amount} />
                   </td>
                   <td style={{ color: 'var(--text2)', fontSize: '0.8rem' }}>{age(u.block_time)}</td>
                   <td>

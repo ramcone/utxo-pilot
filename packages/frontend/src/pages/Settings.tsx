@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useWalletStore } from '../store/walletStore';
 import { api } from '../api/client';
+import { CURRENCIES } from '../currencies';
 
 export default function Settings() {
   const qc = useQueryClient();
@@ -15,12 +16,14 @@ export default function Settings() {
   const [dustThreshold, setDustThreshold]   = useState('1000');
   const [smallThreshold, setSmallThreshold] = useState('10000');
   const [gapLimit, setGapLimit]             = useState('20');
+  const [fiatCurrency, setFiatCurrency]     = useState('USD');
 
   useEffect(() => {
     if (settings) {
       setDustThreshold(settings.dust_threshold ?? '1000');
       setSmallThreshold(settings.small_utxo_threshold ?? '10000');
       setGapLimit(settings.default_gap_limit ?? '20');
+      setFiatCurrency(settings.fiat_currency ?? 'USD');
     }
   }, [settings]);
 
@@ -29,6 +32,7 @@ export default function Settings() {
       dust_threshold:       parseInt(dustThreshold, 10),
       small_utxo_threshold: parseInt(smallThreshold, 10),
       default_gap_limit:    parseInt(gapLimit, 10),
+      fiat_currency:        fiatCurrency,
     }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['settings'] }),
   });
@@ -49,6 +53,33 @@ export default function Settings() {
       <div className="page-header">
         <h2>⚙ Settings</h2>
         <p>Configure thresholds and manage wallets.</p>
+      </div>
+
+      {/* Fiat currency */}
+      <div className="card mb-6">
+        <h3 style={{ fontSize: '0.9rem', marginBottom: 12 }}>💱 Fiat currency</h3>
+        <div className="field">
+          <label className="label">Display currency</label>
+          <select
+            className="select"
+            value={fiatCurrency}
+            onChange={(e) => setFiatCurrency(e.target.value)}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code} — {c.name} ({c.symbol})
+              </option>
+            ))}
+          </select>
+          <span className="text-sm text-muted">
+            BTC and sat amounts will show an approximate fiat value alongside them.
+            Price data is fetched from mempool.space and refreshed every 5 minutes.
+          </span>
+        </div>
+        <button className="btn btn-primary btn-sm mt-4" onClick={() => saveMut.mutate()} disabled={saveMut.isPending}>
+          {saveMut.isPending ? 'Saving…' : 'Save currency'}
+        </button>
+        {saveMut.isSuccess && <div className="alert alert-success mt-4">✓ Saved.</div>}
       </div>
 
       {/* UTXO thresholds */}

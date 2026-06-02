@@ -5,6 +5,7 @@ import { useWalletStore } from '../store/walletStore';
 import { usePlanStore } from '../store/planStore';
 import { api } from '../api/client';
 import FeePanel from '../components/FeePanel';
+import FiatValue from '../components/FiatValue';
 
 export default function SpendPlanner() {
   const { activeWalletId } = useWalletStore();
@@ -82,9 +83,15 @@ export default function SpendPlanner() {
               autoFocus
             />
             <div className="flex justify-between text-sm text-muted">
-              <span>Available: {satsBalance.toLocaleString()} sats</span>
+              <span>
+                Available: {satsBalance.toLocaleString()} sats
+                <FiatValue sats={satsBalance} />
+              </span>
               {amount && !isNaN(parseInt(amount)) && (
-                <span>{(parseInt(amount) / 1e8).toFixed(8)} BTC</span>
+                <span>
+                  {(parseInt(amount) / 1e8).toFixed(8)} BTC
+                  <FiatValue sats={parseInt(amount)} />
+                </span>
               )}
             </div>
           </div>

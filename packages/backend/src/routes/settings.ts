@@ -9,6 +9,7 @@ const UpdateSettingsSchema = z.object({
   dust_threshold:       z.number().int().min(0).optional(),
   small_utxo_threshold: z.number().int().min(0).optional(),
   default_gap_limit:    z.number().int().min(1).max(100).optional(),
+  fiat_currency:        z.string().length(3).optional(),
 });
 
 export async function settingsRoutes(app: FastifyInstance) {
@@ -35,6 +36,7 @@ export async function settingsRoutes(app: FastifyInstance) {
     if (data.dust_threshold !== undefined)       upsert.run('dust_threshold', String(data.dust_threshold));
     if (data.small_utxo_threshold !== undefined) upsert.run('small_utxo_threshold', String(data.small_utxo_threshold));
     if (data.default_gap_limit !== undefined)    upsert.run('default_gap_limit', String(data.default_gap_limit));
+    if (data.fiat_currency !== undefined)        upsert.run('fiat_currency', data.fiat_currency);
 
     return reply.send({ ok: true });
   });

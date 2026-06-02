@@ -11,6 +11,15 @@ UTXO Pilot helps self-custody Bitcoin users plan spends and consolidations *befo
 
 **It cannot sign or broadcast transactions.** It is a read-only planning tool.
 
+Key features:
+- UTXO Explorer with filtering, sorting, and manual labels (BIP329 import supported)
+- Spend Planner with fee-first and privacy-first coin selection modes
+- Consolidation Planner with fee comparison across urgency tiers
+- Live fee rate panel and fee rate history chart (1H / 1D / 1W / 1M / 1Y)
+- Fiat currency conversion (21 currencies) shown alongside all BTC and sat amounts
+- JSON and CSV plan export with a signing checklist
+- In-app Getting Started guide and bug report form (GitHub Issues)
+
 ---
 
 ## Requirements
@@ -86,20 +95,23 @@ utxo-pilot/
 │   ├── backend/              # Fastify API + SQLite
 │   │   ├── src/
 │   │   │   ├── db/           # Database init + migrations
-│   │   │   ├── routes/       # API endpoints (wallets, sync, utxos, fees, labels, plans, export, settings, feeHistory)
-│   │   │   └── services/     # derivation, esplora, coin selection, consolidation
+│   │   │   ├── routes/       # wallets, sync, utxos, fees, feeHistory, price,
+│   │   │   │                 # labels, plans, export, settings
+│   │   │   └── services/     # derivation, esplora, coinSelection, consolidation
 │   │   ├── fixtures/         # Dev seed data
 │   │   └── data/             # SQLite file created at runtime (git-ignored)
 │   └── frontend/             # React + Vite
 │       └── src/
 │           ├── api/          # API client
-│           ├── components/   # Layout, FeePanel, FeeRateChart, UTXOTable, PrivacyWarning
-│           ├── pages/        # Welcome, ImportWallet, DataSource, Dashboard, UTXOExplorer,
-│           │                 # SpendPlanner, ConsolidationPlanner, PlanReview, Settings,
-│           │                 # Setup, WhyUTXOPilot, Feedback
+│           ├── components/   # Layout, FeePanel, FeeRateChart, FiatValue,
+│           │                 # UTXOTable, PrivacyWarning
+│           ├── hooks/        # useBTCPrice
+│           ├── pages/        # Welcome, ImportWallet, DataSource, Dashboard,
+│           │                 # UTXOExplorer, SpendPlanner, ConsolidationPlanner,
+│           │                 # PlanReview, Settings, Setup, WhyUTXOPilot, Feedback
 │           ├── store/        # Zustand stores (wallet, plan)
+│           ├── currencies.ts # Supported fiat currencies + formatting helpers
 │           └── config.ts     # GitHub repo URL (update before deploying)
-├── .env.example
 ├── .gitignore
 └── README.md
 ```
@@ -122,6 +134,7 @@ All endpoints are under `http://localhost:3001/api`.
 | GET    | /wallets/:id/balance | Balance summary |
 | GET    | /fees | Current fee rates |
 | GET    | /fees/history?range=1h\|1d\|1w\|1m\|1y | Fee rate history chart data |
+| GET    | /price?currency=USD | Live BTC price in the given fiat currency |
 | GET    | /wallets/:id/labels | Labels list |
 | POST   | /wallets/:id/labels | Upsert a label |
 | POST   | /wallets/:id/labels/import | Import BIP329 JSONL |
@@ -147,6 +160,14 @@ http://192.168.1.10:3002
 ```
 
 Compatible backends: [esplora](https://github.com/Blockstream/esplora), [mempool.space](https://github.com/mempool/mempool), any Esplora-compatible API.
+
+---
+
+## Fiat currency display
+
+Go to **⚙️ Settings → 💱 Fiat currency** and select from 21 supported currencies (USD, EUR, GBP, CAD, AUD, CHF, JPY, and more). Once saved, approximate fiat values appear alongside all BTC and sat amounts on the Dashboard, UTXO Explorer, Spend Planner, and Consolidation Planner.
+
+Prices are fetched from mempool.space and cached for 5 minutes. No API key is required.
 
 ---
 
