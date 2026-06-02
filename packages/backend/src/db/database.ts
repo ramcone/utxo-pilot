@@ -150,4 +150,30 @@ const MIGRATIONS: [string, string][] = [
       ('fiat_currency', 'USD');
     `,
   ],
+  [
+    '002_add_p2tr_script_type',
+    `
+    -- SQLite cannot ALTER a CHECK constraint directly.
+    -- Recreate the wallets table adding 'p2tr' to the script_type constraint.
+    PRAGMA foreign_keys = OFF;
+
+    CREATE TABLE wallets_new (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      name             TEXT NOT NULL,
+      original_pub     TEXT NOT NULL,
+      pub_type         TEXT NOT NULL CHECK(pub_type IN ('xpub','ypub','zpub','descriptor')),
+      script_type      TEXT NOT NULL CHECK(script_type IN ('p2wpkh','p2sh-p2wpkh','p2pkh','p2tr')),
+      derivation_path  TEXT NOT NULL,
+      gap_limit        INTEGER NOT NULL DEFAULT 20,
+      created_at       INTEGER NOT NULL,
+      synced_at        INTEGER
+    );
+
+    INSERT INTO wallets_new SELECT * FROM wallets;
+    DROP TABLE wallets;
+    ALTER TABLE wallets_new RENAME TO wallets;
+
+    PRAGMA foreign_keys = ON;
+    `,
+  ],
 ];

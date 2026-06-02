@@ -219,6 +219,9 @@ Make sure you have the [Visual C++ Build Tools](https://visualstudio.microsoft.c
 **Sync returns no UTXOs**  
 Check that your Esplora endpoint is reachable via *Settings → Data Source → Test connection*. If you used a testnet zpub, note that v0.1 is mainnet only.
 
+**Sync is slow or shows "Rate limited — waiting 10s…"**  
+Public Esplora endpoints (Blockstream, mempool.space) rate-limit rapid requests. UTXO Pilot adds a 300ms delay between address requests and automatically retries after 10 seconds if rate-limited. For a wallet with many addresses this is expected behaviour — let it complete. For faster syncing, run your own Esplora node and set it as your data source.
+
 **Ledger shows 0 balance after sync**  
 Ledger Live exports `xpub` version bytes even for Native SegWit and Taproot accounts. On the Import Wallet page, paste your xpub and use the yellow converter panel to convert it to `zpub` (for Native SegWit / `bc1q…` addresses) or enable Taproot mode (for `bc1p…` addresses). Verify the first derived address matches your Ledger Receive address before importing.
 

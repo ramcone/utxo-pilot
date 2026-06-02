@@ -17,8 +17,9 @@ export default function ImportWallet() {
   const [name, setName]           = useState('');
   const [pub, setPub]             = useState('');
   const [error, setError]         = useState('');
-  const [converting, setConverting] = useState(false);
+  const [converting, setConverting]       = useState(false);
   const [convertResult, setConvertResult] = useState<{ converted: string; firstAddress: string; isTaproot?: boolean } | null>(null);
+  const [taprootMode, setTaprootMode]     = useState(false);
 
   const detectedType = PUB_FORMATS.find((f) => pub.trim().startsWith(f.prefix));
   const isXpub = pub.trim().startsWith('xpub');
@@ -27,7 +28,7 @@ export default function ImportWallet() {
     mutationFn: () => api.wallets.create({
       name: name.trim(),
       pub:  pub.trim(),
-      ...(convertResult?.isTaproot ? { force_script_type: 'p2tr' as const } : {}),
+      ...(taprootMode ? { force_script_type: 'p2tr' as const } : {}),
     }),
     onSuccess: (wallet) => {
       qc.invalidateQueries({ queryKey: ['wallets'] });
@@ -69,8 +70,16 @@ export default function ImportWallet() {
   const applyConversion = () => {
     if (convertResult) {
       setPub(convertResult.converted);
+      if (convertResult.isTaproot) setTaprootMode(true);
       setConvertResult(null);
     }
+  };
+
+  // Reset taproot mode if user clears or changes the key
+  const handlePubChange = (val: string) => {
+    setPub(val);
+    setConvertResult(null);
+    setTaprootMode(false);
   };
 
   return (
@@ -108,13 +117,25 @@ export default function ImportWallet() {
             rows={3}
             placeholder="zpub6rFR7y4Q2Aij…"
             value={pub}
-            onChange={(e) => { setPub(e.target.value); setConvertResult(null); }}
+            onChange={(e) => handlePubChange(e.target.value)}
             style={{ fontFamily: 'monospace', fontSize: '0.8rem', resize: 'vertical' }}
           />
-          {detectedType && (
+          {detectedType && !taprootMode && (
             <div className="text-sm" style={{ color: 'var(--green)' }}>
               ✓ Detected: <strong>{detectedType.type}</strong> — {detectedType.script}
               {detectedType.recommended && <span className="tag tag-orange" style={{ marginLeft: 8 }}>Recommended</span>}
+            </div>
+          )}
+          {taprootMode && (
+            <div className="text-sm" style={{ color: 'var(--accent)', fontWeight: 600 }}>
+              ✓ Taproot mode active — will derive <strong>bc1p…</strong> addresses (BIP86)
+              <button
+                type="button"
+                onClick={() => setTaprootMode(false)}
+                style={{ marginLeft: 10, background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: '0.75rem' }}
+              >
+                ✕ cancel
+              </button>
             </div>
           )}
         </div>
@@ -213,7 +234,9 @@ export default function ImportWallet() {
           disabled={mut.isPending}
           style={{ justifyContent: 'center', padding: '11px' }}
         >
-          {mut.isPending ? <><span className="spinner" /> Importing…</> : 'Import Wallet →'}
+          {mut.isPending
+            ? <><span className="spinner" /> Importing…</>
+            : taprootMode ? 'Import Taproot Wallet →' : 'Import Wallet →'}
         </button>
       </form>
     </div>
