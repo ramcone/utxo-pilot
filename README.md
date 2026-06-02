@@ -37,7 +37,7 @@ This installs packages for both the backend and frontend workspaces.
 ### 2. Copy the environment file
 
 ```powershell
-Copy-Item .env.example packages\backend\.env
+Copy-Item "packages\backend\.env.example" "packages\backend\.env"
 ```
 
 The defaults work out of the box. Edit `packages\backend\.env` if you want to change the port or DB path.
