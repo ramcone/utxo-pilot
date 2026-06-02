@@ -71,6 +71,8 @@ Open **http://localhost:5173** in your browser.
 
 ## First-time setup flow
 
+The app includes a built-in **Getting Started** guide (sidebar → ⚡ Getting Started) that tracks your progress through each step. In brief:
+
 1. **Import a wallet** → Paste your `zpub` (native segwit, recommended), `ypub`, or `xpub`.
 2. **Configure data source** → Choose Blockstream, mempool.space, or your own node.
 3. **Sync** → Click "Sync Now" on the Dashboard to fetch addresses and UTXOs.
@@ -88,17 +90,21 @@ utxo-pilot/
 │   ├── backend/              # Fastify API + SQLite
 │   │   ├── src/
 │   │   │   ├── db/           # Database init + migrations
-│   │   │   ├── routes/       # API endpoints
-│   │   │   └── services/     # derivation, esplora, coin selection
+│   │   │   ├── routes/       # API endpoints (wallets, sync, utxos, fees, labels, plans, export, settings, feeHistory)
+│   │   │   └── services/     # derivation, esplora, coin selection, consolidation
 │   │   ├── fixtures/         # Dev seed data
-│   │   └── data/             # SQLite file created at runtime
+│   │   └── data/             # SQLite file created at runtime (git-ignored)
 │   └── frontend/             # React + Vite
 │       └── src/
 │           ├── api/          # API client
-│           ├── components/   # Shared UI components
-│           ├── pages/        # Route pages
-│           └── store/        # Zustand stores
+│           ├── components/   # Layout, FeePanel, FeeRateChart, UTXOTable, PrivacyWarning
+│           ├── pages/        # Welcome, ImportWallet, DataSource, Dashboard, UTXOExplorer,
+│           │                 # SpendPlanner, ConsolidationPlanner, PlanReview, Settings,
+│           │                 # Setup, WhyUTXOPilot, Feedback
+│           ├── store/        # Zustand stores (wallet, plan)
+│           └── config.ts     # GitHub repo URL (update before deploying)
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
 
@@ -119,6 +125,7 @@ All endpoints are under `http://localhost:3001/api`.
 | GET    | /wallets/:id/utxos | UTXO list (filterable) |
 | GET    | /wallets/:id/balance | Balance summary |
 | GET    | /fees | Current fee rates |
+| GET    | /fees/history?range=1h\|1d\|1w\|1m\|1y | Fee rate history chart data |
 | GET    | /wallets/:id/labels | Labels list |
 | POST   | /wallets/:id/labels | Upsert a label |
 | POST   | /wallets/:id/labels/import | Import BIP329 JSONL |
@@ -206,6 +213,24 @@ Change `PORT=3002` in `packages/backend/.env`.
 
 ---
 
+## Feedback & bug reports
+
+Use the in-app feedback form (sidebar → 🐛 Feedback & Bugs) to submit bug reports and feature requests directly to GitHub Issues.
+
+GitHub repository: [github.com/ramcone/utxo-pilot](https://github.com/ramcone/utxo-pilot)
+
+---
+
+## Configuring the GitHub feedback link
+
+Open `packages/frontend/src/config.ts` and confirm the repo is set correctly:
+
+```ts
+export const GITHUB_REPO = 'ramcone/utxo-pilot';
+```
+
+---
+
 ## License
 
-MIT — use freely, no warranty.
+GNU General Public License v3.0 — see [LICENSE](LICENSE) for details.
