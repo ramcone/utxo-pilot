@@ -1236,3 +1236,11 @@ UTXO Pilot backend listening on http://127.0.0.1:3001
 {"level":30,"time":1780410269642,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h2","res":{"statusCode":200},"responseTime":0.6024999991059303,"msg":"request completed"}
 {"level":30,"time":1780410269642,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h3","req":{"method":"GET","url":"/api/settings"},"msg":"incoming request"}
 {"level":30,"time":1780410269643,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h3","res":{"statusCode":200},"responseTime":0.3312999978661537,"msg":"request completed"}
+{"level":30,"time":1780412031572,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h4","req":{"method":"GET","url":"/api/wallets"},"msg":"incoming request"}
+{"level":30,"time":1780412031573,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h4","res":{"statusCode":200},"responseTime":0.8567000031471252,"msg":"request completed"}
+{"level":30,"time":1780412031574,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h5","req":{"method":"GET","url":"/api/settings"},"msg":"incoming request"}
+{"level":30,"time":1780412031574,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h5","res":{"statusCode":200},"responseTime":0.4091000035405159,"msg":"request completed"}
+{"level":30,"time":1780412149489,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h6","req":{"method":"GET","url":"/api/wallets"},"msg":"incoming request"}
+{"level":30,"time":1780412149490,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h6","res":{"statusCode":200},"responseTime":0.5834000036120415,"msg":"request completed"}
+{"level":30,"time":1780412149491,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h7","req":{"method":"GET","url":"/api/settings"},"msg":"incoming request"}
+{"level":30,"time":1780412149491,"pid":2264,"hostname":"DESKTOP-HFFR74R","reqId":"req-h7","res":{"statusCode":200},"responseTime":0.34700000286102295,"msg":"request completed"}
