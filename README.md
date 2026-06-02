@@ -34,13 +34,9 @@ npm install
 
 This installs packages for both the backend and frontend workspaces.
 
-### 2. Copy the environment file
+### 2. Environment file
 
-```powershell
-Copy-Item "packages\backend\.env.example" "packages\backend\.env"
-```
-
-The defaults work out of the box. Edit `packages\backend\.env` if you want to change the port or DB path.
+A `.env` file is included in `packages\backend\` with sensible defaults. No changes are needed to get started. You can edit it if you want to change the port or database path.
 
 ### 3. (Optional) Seed dev data
 
