@@ -5,8 +5,9 @@ import { parsePub } from '../services/derivation.js';
 import { Wallet } from '../types.js';
 
 const CreateWalletSchema = z.object({
-  name: z.string().min(1).max(64),
-  pub: z.string().min(10),
+  name:              z.string().min(1).max(64),
+  pub:               z.string().min(10),
+  force_script_type: z.enum(['p2tr']).optional(),
 });
 
 export async function walletRoutes(app: FastifyInstance) {
@@ -59,7 +60,7 @@ export async function walletRoutes(app: FastifyInstance) {
 
     let parsed;
     try {
-      parsed = parsePub(body.data.pub.trim());
+      parsed = parsePub(body.data.pub.trim(), body.data.force_script_type);
     } catch (err: any) {
       return reply.status(400).send({ error: err.message });
     }

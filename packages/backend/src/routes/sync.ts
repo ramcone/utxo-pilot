@@ -4,6 +4,8 @@
  */
 
 import { FastifyInstance } from 'fastify';
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 import { getDb } from '../db/database.js';
 import { deriveAddress } from '../services/derivation.js';
 import { EsploraClient } from '../services/esplora.js';
@@ -89,12 +91,24 @@ async function runSync(
         'INSERT OR IGNORE INTO addresses (wallet_id, address, derivation_index, is_change) VALUES (?, ?, ?, ?)'
       ).run(walletId, address, index, isChange ? 1 : 0);
 
-      // Fetch UTXOs
+      // Fetch UTXOs — small delay to avoid rate limiting on public endpoints
+      await sleep(300);
       let utxos;
       try {
         utxos = await client.getAddressUTXOs(address);
-      } catch (err) {
-        throw new Error(`Esplora request failed: ${err}`);
+      } catch (err: any) {
+        // Retry once on 429
+        if (String(err).includes('429')) {
+          setState(`Rate limited — waiting 10s before retrying #${index}…`);
+          await sleep(10_000);
+          try {
+            utxos = await client.getAddressUTXOs(address);
+          } catch (err2) {
+            throw new Error(`Esplora request failed: ${err2}`);
+          }
+        } else {
+          throw new Error(`Esplora request failed: ${err}`);
+        }
       }
 
       if (utxos.length > 0) {

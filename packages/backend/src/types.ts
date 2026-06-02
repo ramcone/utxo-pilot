@@ -1,6 +1,6 @@
 // Shared domain types for the backend
 
-export type ScriptType = 'p2wpkh' | 'p2sh-p2wpkh' | 'p2pkh';
+export type ScriptType = 'p2wpkh' | 'p2sh-p2wpkh' | 'p2pkh' | 'p2tr';
 export type PubKeyType = 'xpub' | 'ypub' | 'zpub' | 'descriptor';
 export type PlanType = 'spend' | 'consolidation';
 export type SelectionMode = 'fee-first' | 'privacy-first';

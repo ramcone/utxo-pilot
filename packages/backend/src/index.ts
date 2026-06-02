@@ -11,6 +11,7 @@ import { exportRoutes } from './routes/export.js';
 import { settingsRoutes } from './routes/settings.js';
 import { feeHistoryRoutes } from './routes/feeHistory.js';
 import { priceRoutes } from './routes/price.js';
+import { convertRoutes } from './routes/convert.js';
 import { getDb } from './db/database.js';
 
 const PORT = parseInt(process.env.PORT ?? '3001', 10);
@@ -54,6 +55,7 @@ async function start() {
   await app.register(settingsRoutes);
   await app.register(feeHistoryRoutes);
   await app.register(priceRoutes);
+  await app.register(convertRoutes);
 
   // Health check
   app.get('/api/health', async () => ({ ok: true, version: '0.1.0' }));

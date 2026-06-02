@@ -11,9 +11,10 @@
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
+    "bech32": "^2.0.0",
     "better-sqlite3": "^9.4.3",
-    "bitcoinjs-lib": "^5.2.0",
     "bip32": "^2.0.6",
+    "bitcoinjs-lib": "^5.2.0",
     "bs58check": "^2.1.2",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",

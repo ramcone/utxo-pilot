@@ -18,6 +18,7 @@ Key features:
 - Live fee rate panel and fee rate history chart (1H / 1D / 1W / 1M / 1Y)
 - Fiat currency conversion (21 currencies) shown alongside all BTC and sat amounts
 - JSON and CSV plan export with a signing checklist
+- Taproot (P2TR / BIP86) support including Ledger xpub conversion
 - In-app Getting Started guide and bug report form (GitHub Issues)
 
 ---
@@ -96,7 +97,7 @@ utxo-pilot/
 │   │   ├── src/
 │   │   │   ├── db/           # Database init + migrations
 │   │   │   ├── routes/       # wallets, sync, utxos, fees, feeHistory, price,
-│   │   │   │                 # labels, plans, export, settings
+│   │   │   │                 # labels, plans, export, settings, convert
 │   │   │   └── services/     # derivation, esplora, coinSelection, consolidation
 │   │   ├── fixtures/         # Dev seed data
 │   │   └── data/             # SQLite file created at runtime (git-ignored)
@@ -146,6 +147,7 @@ All endpoints are under `http://localhost:3001/api`.
 | GET    | /settings | App settings |
 | PUT    | /settings | Update settings |
 | POST   | /settings/test-esplora | Test Esplora connectivity |
+| POST   | /convert-pub | Convert xpub → zpub / ypub, or preview Taproot addresses |
 
 ---
 
@@ -194,15 +196,18 @@ You can export labels from Sparrow Wallet, Specter Desktop, or other BIP329-comp
 
 ---
 
-## Supported wallet formats (v0.1)
+## Supported wallet formats
 
-| Format | Script type | BIP |
-|--------|-------------|-----|
-| `zpub` | P2WPKH (native segwit) | BIP84 |
-| `ypub` | P2SH-P2WPKH (wrapped segwit) | BIP49 |
-| `xpub` | P2PKH (legacy) | BIP44 |
+| Format | Script type | BIP | Address format |
+|--------|-------------|-----|----------------|
+| `zpub` | P2WPKH (native segwit) | BIP84 | `bc1q…` |
+| `ypub` | P2SH-P2WPKH (wrapped segwit) | BIP49 | `3…` |
+| `xpub` | P2PKH (legacy) | BIP44 | `1…` |
+| `xpub` + Taproot flag | P2TR (Taproot) | BIP86 | `bc1p…` |
 
-Taproot (`xpub` with BIP86) and descriptors are planned for v0.2.
+**Ledger note:** Ledger Live exports `xpub` version bytes for all account types including Native SegWit and Taproot. Use the built-in converter on the Import Wallet page to get the correct key format — it derives the first address so you can verify it matches your wallet before importing.
+
+Descriptors are planned for a future release.
 
 ---
 
@@ -214,14 +219,17 @@ Make sure you have the [Visual C++ Build Tools](https://visualstudio.microsoft.c
 **Sync returns no UTXOs**  
 Check that your Esplora endpoint is reachable via *Settings → Data Source → Test connection*. If you used a testnet zpub, note that v0.1 is mainnet only.
 
+**Ledger shows 0 balance after sync**  
+Ledger Live exports `xpub` version bytes even for Native SegWit and Taproot accounts. On the Import Wallet page, paste your xpub and use the yellow converter panel to convert it to `zpub` (for Native SegWit / `bc1q…` addresses) or enable Taproot mode (for `bc1p…` addresses). Verify the first derived address matches your Ledger Receive address before importing.
+
 **Port 3001 is already in use**  
 Change `PORT=3002` in `packages/backend/.env`.
 
 ---
 
-## Roadmap (planned)
+## Roadmap
 
-- [ ] Taproot (P2TR) support
+- [x] Taproot (P2TR / BIP86) support
 - [ ] Descriptor wallets
 - [ ] PSBT export (view-only)
 - [ ] Tauri desktop packaging

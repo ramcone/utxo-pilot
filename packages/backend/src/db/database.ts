@@ -53,7 +53,7 @@ const MIGRATIONS: [string, string][] = [
       name             TEXT NOT NULL,
       original_pub     TEXT NOT NULL,
       pub_type         TEXT NOT NULL CHECK(pub_type IN ('xpub','ypub','zpub','descriptor')),
-      script_type      TEXT NOT NULL CHECK(script_type IN ('p2wpkh','p2sh-p2wpkh','p2pkh')),
+      script_type      TEXT NOT NULL CHECK(script_type IN ('p2wpkh','p2sh-p2wpkh','p2pkh','p2tr')),
       derivation_path  TEXT NOT NULL,
       gap_limit        INTEGER NOT NULL DEFAULT 20,
       created_at       INTEGER NOT NULL,

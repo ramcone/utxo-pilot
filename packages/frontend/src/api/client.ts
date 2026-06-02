@@ -30,7 +30,7 @@ export const api = {
   wallets: {
     list:   ()                  => get<any[]>('/wallets'),
     get:    (id: number)        => get<any>(`/wallets/${id}`),
-    create: (body: { name: string; pub: string }) => post<any>('/wallets', body),
+    create: (body: { name: string; pub: string; force_script_type?: 'p2tr' }) => post<any>('/wallets', body),
     delete: (id: number)        => del<any>(`/wallets/${id}`),
   },
   sync: {

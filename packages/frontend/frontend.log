@@ -155,3 +155,15 @@ Error: connect ECONNREFUSED ::1:3001
 [2m11:30:03 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/SpendPlanner.tsx[22m
 [2m11:30:09 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ConsolidationPlanner.tsx[22m
 [2m11:30:16 AM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ConsolidationPlanner.tsx[22m
+[2m4:12:13 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/fees[39m
+Error: connect ECONNREFUSED 127.0.0.1:3001
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16)
+[2m4:12:45 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:12 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Settings.tsx, /src/pages/UTXOExplorer.tsx, /src/components/Layout.tsx, /src/pages/ImportWallet.tsx, /src/pages/SpendPlanner.tsx, /src/pages/PlanReview.tsx, /src/pages/ConsolidationPlanner.tsx, /src/pages/Dashboard.tsx, /src/pages/DataSource.tsx, /src/components/UTXOTable.tsx, /src/components/FeePanel.tsx, /src/pages/Setup.tsx, /src/components/FiatValue.tsx[22m
+[2m4:32:19 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:23 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:28 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:31 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:39 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:45 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
+[2m4:32:51 PM[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/ImportWallet.tsx[22m
