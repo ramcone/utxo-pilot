@@ -5,7 +5,7 @@ import { UTXO } from '../types';
 import FiatValue from './FiatValue';
 
 function fmt(sats: number) {
-  if (sats >= 1_000_000) return `${(sats / 1_000_000).toFixed(4)} BTC`;
+  if (sats >= 1_000_000) return `${(sats / 1e8).toFixed(8)} BTC`;
   return `${sats.toLocaleString()} sats`;
 }
 
