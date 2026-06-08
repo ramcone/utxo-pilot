@@ -24,6 +24,59 @@ Key features:
 
 ---
 
+## Who is it for?
+
+UTXO Pilot is built for **Bitcoin self-custody users** — anyone who holds their own keys using a hardware wallet (Ledger, Trezor, Coldcard, Foundation Passport, etc.) and wants more visibility and control over how their funds are structured and spent.
+
+It is especially useful if you:
+- Hold Bitcoin across multiple UTXOs accumulated over time
+- Want to minimise transaction fees without guessing which coins to use
+- Care about privacy and want to avoid mixing coin histories
+- Have small or dust UTXOs you want to consolidate during low-fee periods
+- Use Sparrow Wallet, Specter Desktop, or a hardware wallet and want a dedicated planning layer
+
+---
+
+## What it does NOT do
+
+UTXO Pilot is intentionally limited by design:
+
+- ❌ Does **not** accept seed phrases or private keys — ever
+- ❌ Does **not** sign transactions
+- ❌ Does **not** broadcast transactions to the Bitcoin network
+- ❌ Does **not** send your data to any server or cloud
+- ❌ Does **not** require an account or login
+- ❌ Does **not** collect telemetry or analytics
+
+It is a **read-only planning tool**. You plan here, then execute in your actual wallet.
+
+---
+
+## Why is it safe by design?
+
+UTXO Pilot can only ever see what your extended public key reveals — your addresses and balances. That is the same information visible to anyone on the blockchain. There is nothing for an attacker to steal.
+
+- **No private key input** — the app does not have fields for seeds or private keys and will reject anything that looks like one
+- **No network exposure** — the backend only listens on `127.0.0.1` (your own machine). It is not reachable from the internet or your local network
+- **No cloud** — all data is written to a local SQLite file on your machine and goes nowhere else
+- **Open source** — the full source code is on GitHub and can be audited by anyone
+
+The worst-case outcome of using UTXO Pilot is that someone learns your Bitcoin balance — the same information already public on the blockchain.
+
+---
+
+## Try it without real wallet data
+
+Not ready to import your real wallet? Run the built-in demo first:
+
+```powershell
+npm run seed --workspace=packages/backend
+```
+
+This populates the app with a demo wallet and 7 sample UTXOs so you can explore every screen — Dashboard, UTXO Explorer, Spend Planner, Consolidation Planner, Plan History — without connecting a real wallet or exposing any real data. Delete the demo wallet from Settings when you are ready to import your own.
+
+---
+
 ## Requirements
 
 - **Node.js 18+** (LTS recommended) — [nodejs.org](https://nodejs.org)
