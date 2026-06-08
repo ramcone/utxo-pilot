@@ -13,6 +13,7 @@ import Settings from './pages/Settings';
 import Setup from './pages/Setup';
 import WhyUTXOPilot from './pages/WhyUTXOPilot';
 import Feedback from './pages/Feedback';
+import PlanHistory from './pages/PlanHistory';
 
 export default function App() {
   const activeWalletId = useWalletStore((s) => s.activeWalletId);
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="spend"         element={activeWalletId ? <SpendPlanner /> : <Navigate to="/" replace />} />
           <Route path="consolidation" element={activeWalletId ? <ConsolidationPlanner /> : <Navigate to="/" replace />} />
           <Route path="plan/:planId"  element={<PlanReview />} />
+          <Route path="plans"         element={activeWalletId ? <PlanHistory /> : <Navigate to="/" replace />} />
           <Route path="settings"      element={<Settings />} />
           <Route path="setup"         element={<Setup />} />
           <Route path="why"           element={<WhyUTXOPilot />} />

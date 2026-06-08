@@ -9,6 +9,7 @@ const NAV = [
   { to: '/utxos',         label: '🔬  UTXO Explorer' },
   { to: '/spend',         label: '🚀  Spend Planner' },
   { to: '/consolidation', label: '🧹  Consolidation' },
+  { to: '/plans',         label: '📋  Plan History' },
 ];
 
 const NAV_BOTTOM = [

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../api/client';
 import { usePlanStore } from '../store/planStore';
 import { PlanDetail, PlanInput } from '../types';
+import FiatValue from '../components/FiatValue';
 
 function fmt(sats: number) {
   return `${sats.toLocaleString()} sats (${(sats / 1e8).toFixed(8)} BTC)`;
@@ -75,12 +76,14 @@ export default function PlanReview() {
           <div className="card">
             <div className="card-title">Send amount</div>
             <div className="card-value" style={{ fontSize: '1rem' }}>{plan.target_amount?.toLocaleString() ?? '—'} sats</div>
+            {plan.target_amount != null && <FiatValue sats={plan.target_amount} display="block" />}
           </div>
         )}
         {plan.plan_type === 'consolidation' && (
           <div className="card">
             <div className="card-title">Output amount</div>
             <div className="card-value" style={{ fontSize: '1rem' }}>{plan.estimated_output.toLocaleString()} sats</div>
+            <FiatValue sats={plan.estimated_output} display="block" />
           </div>
         )}
         <div className="card">
@@ -88,6 +91,7 @@ export default function PlanReview() {
           <div className="card-value" style={{ fontSize: '1rem', color: 'var(--yellow)' }}>
             {plan.estimated_fee.toLocaleString()} sats
           </div>
+          <FiatValue sats={plan.estimated_fee} display="block" />
           <div className="card-sub">@ {plan.fee_rate} sat/vB</div>
         </div>
         <div className="card">
