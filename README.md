@@ -3,6 +3,9 @@
 > A local-first Bitcoin UTXO hygiene and fee planning tool.  
 > Watch-only. No keys. No cloud. No telemetry.
 
+GitHub: [github.com/ramcone/utxo-pilot](https://github.com/ramcone/utxo-pilot)  
+License: GNU General Public License v3.0
+
 ---
 
 ## What it does
@@ -37,7 +40,7 @@ It is especially useful if you:
 
 ---
 
-## What it does NOT do
+## What it does not do
 
 UTXO Pilot is intentionally limited by design:
 
@@ -52,7 +55,7 @@ It is a **read-only planning tool**. You plan here, then execute in your actual 
 
 ---
 
-## Why is it safe by design?
+## Security model
 
 UTXO Pilot can only ever see what your extended public key reveals — your addresses and balances. That is the same information visible to anyone on the blockchain. There is nothing for an attacker to steal.
 
@@ -65,7 +68,17 @@ The worst-case outcome of using UTXO Pilot is that someone learns your Bitcoin b
 
 ---
 
-## Try it without real wallet data
+## Privacy warnings
+
+- **Public Esplora endpoints** (Blockstream, mempool.space) receive your wallet addresses when you sync. UTXO Pilot shows a persistent yellow warning banner whenever a public endpoint is active.
+- xpubs are stored in the local SQLite database only and are not logged in server logs.
+- For maximum privacy, run your own Esplora or mempool.space node and set it as your data source under **Settings → Data Source**.
+- Fee rate data and BTC price data are fetched from mempool.space. These requests do not include any wallet information.
+- No telemetry, no analytics, no accounts.
+
+---
+
+## Demo mode
 
 Not ready to import your real wallet? Run the built-in demo first:
 
@@ -73,59 +86,66 @@ Not ready to import your real wallet? Run the built-in demo first:
 npm run seed --workspace=packages/backend
 ```
 
-This populates the app with a demo wallet and 7 sample UTXOs so you can explore every screen — Dashboard, UTXO Explorer, Spend Planner, Consolidation Planner, Plan History — without connecting a real wallet or exposing any real data. Delete the demo wallet from Settings when you are ready to import your own.
+This populates the app with a demo wallet and 7 sample UTXOs so you can explore every screen — Dashboard, UTXO Explorer, Spend Planner, Consolidation Planner, Plan History — without connecting a real wallet or exposing any real data.
+
+Delete the demo wallet from **Settings → Manage Wallets** when you are ready to import your own.
 
 ---
 
-## Requirements
+## Screenshots
+
+> Screenshots will be added in a future update. In the meantime, run the app in demo mode (`npm run seed`) to explore the full UI with sample data.
+
+---
+
+## Installation
+
+### Requirements
 
 - **Node.js 18+** (LTS recommended) — [nodejs.org](https://nodejs.org)
 - **npm 9+** (bundled with Node)
-- Windows 10 / 11 (or macOS / Linux)
+- Windows 10/11, macOS, or Linux
 - Internet connection (or a self-hosted Esplora node)
 
----
+### Steps
 
-## Quick start (Windows)
+**1. Clone the repository**
 
-Open **PowerShell** or **Windows Terminal** in the project root folder.
+```bash
+git clone https://github.com/ramcone/utxo-pilot.git
+cd utxo-pilot
+```
 
-### 1. Install dependencies
+**2. Install dependencies**
 
-```powershell
+```bash
 npm install
 ```
 
-This installs packages for both the backend and frontend workspaces.
+**3. Environment file**
 
-### 2. Environment file
+A `.env` file is included in `packages/backend/` with sensible defaults. No changes are needed to get started. Edit it if you want to change the port or database path.
 
-A `.env` file is included in `packages\backend\` with sensible defaults. No changes are needed to get started. You can edit it if you want to change the port or database path.
+**4. (Optional) Seed demo data**
 
-### 3. (Optional) Seed dev data
-
-If you want to explore the UI without a real wallet, seed mock data:
-
-```powershell
+```bash
 npm run seed --workspace=packages/backend
 ```
 
-This creates a demo wallet with fake UTXOs so every screen has data to show.
+**5. Start the app**
 
-### 4. Start the app
-
-```powershell
+```bash
 npm run dev
 ```
 
-This starts both servers in parallel:
-
-| Server   | URL                       |
-|----------|---------------------------|
-| Frontend | http://localhost:5173      |
-| Backend  | http://localhost:3001      |
+| Server   | URL                  |
+|----------|----------------------|
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:3001 |
 
 Open **http://localhost:5173** in your browser.
+
+> **Windows note:** Use PowerShell or Windows Terminal. If `better-sqlite3` fails to install, see the Troubleshooting section below.
 
 ---
 
@@ -139,6 +159,35 @@ The app includes a built-in **Getting Started** guide (sidebar → ⚡ Getting S
 4. **Explore** → Browse the UTXO Explorer, add labels, filter by amount.
 5. **Plan** → Use Spend Planner or Consolidation Planner.
 6. **Export** → Download the plan as JSON or CSV, then recreate it in your hardware wallet.
+
+---
+
+## Supported wallet formats
+
+| Format | Script type | BIP | Address format |
+|--------|-------------|-----|----------------|
+| `zpub` | P2WPKH (native segwit) | BIP84 | `bc1q…` |
+| `ypub` | P2SH-P2WPKH (wrapped segwit) | BIP49 | `3…` |
+| `xpub` | P2PKH (legacy) | BIP44 | `1…` |
+| `xpub` + Taproot flag | P2TR (Taproot) | BIP86 | `bc1p…` |
+
+**Ledger note:** Ledger Live exports `xpub` version bytes for all account types including Native SegWit and Taproot. Use the built-in converter on the Import Wallet page to get the correct key format — it derives the first address so you can verify it matches your wallet before importing.
+
+Descriptors are planned for a future release.
+
+---
+
+## Fiat currency display
+
+Go to **⚙️ Settings → 💱 Fiat currency** and select from 21 supported currencies (USD, EUR, GBP, CAD, AUD, CHF, JPY, and more). Once saved, approximate fiat values appear alongside all BTC and sat amounts throughout the app including on plan summaries.
+
+Prices are fetched from mempool.space and cached for 5 minutes. No API key is required.
+
+---
+
+## Importing BIP329 labels
+
+Export labels from Sparrow Wallet, Specter Desktop, or any BIP329-compatible wallet as a `.jsonl` file, then import them in the UTXO Explorer screen. Labels are stored only in the local SQLite database.
 
 ---
 
@@ -173,95 +222,52 @@ utxo-pilot/
 
 ---
 
-## API reference (brief)
+## Known limitations
 
-All endpoints are under `http://localhost:3001/api`.
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET    | /wallets | List wallets |
-| POST   | /wallets | Import wallet (name + pub) |
-| DELETE | /wallets/:id | Remove wallet + all data |
-| GET    | /wallets/:id | Wallet detail + stats |
-| POST   | /wallets/:id/sync | Trigger address sync |
-| GET    | /wallets/:id/sync/status | Sync progress |
-| GET    | /wallets/:id/utxos | UTXO list (filterable) |
-| GET    | /wallets/:id/balance | Balance summary |
-| GET    | /fees | Current fee rates |
-| GET    | /fees/history?range=1h\|1d\|1w\|1m\|1y | Fee rate history chart data |
-| GET    | /price?currency=USD | Live BTC price in the given fiat currency |
-| GET    | /wallets/:id/labels | Labels list |
-| POST   | /wallets/:id/labels | Upsert a label |
-| POST   | /wallets/:id/labels/import | Import BIP329 JSONL |
-| POST   | /wallets/:id/plans/spend | Create spend plan |
-| POST   | /wallets/:id/plans/consolidation | Create consolidation plan |
-| GET    | /plans/:id | Plan detail |
-| GET    | /plans/:id/export?format=json | Export plan as JSON |
-| GET    | /plans/:id/export?format=csv | Export plan as CSV |
-| GET    | /settings | App settings |
-| PUT    | /settings | Update settings |
-| POST   | /settings/test-esplora | Test Esplora connectivity |
-| POST   | /convert-pub | Convert xpub → zpub / ypub, or preview Taproot addresses |
+- **Mainnet only** — testnet is not supported in v0.1
+- **No descriptor wallet support** — only xpub/ypub/zpub formats; descriptor wallets are planned
+- **No PSBT export** — plans are exported as JSON/CSV for manual recreation; PSBT support is on the roadmap
+- **Public Esplora rate limiting** — rapid syncing on large wallets will trigger rate limits on Blockstream and mempool.space public endpoints. The app handles this automatically with retries, but syncing a large wallet may take several minutes
+- **No multi-wallet view** — each wallet is managed independently; a unified multi-wallet dashboard is planned
+- **Gap limit** — the default scan depth is 20 consecutive unused addresses. Wallets with unusual derivation patterns may need a higher gap limit (adjustable in Settings)
 
 ---
 
-## Using your own Esplora node (recommended for privacy)
+## Roadmap
 
-In the frontend go to **Data Source → Custom / self-hosted** and enter your node's base URL:
-
-```
-http://localhost:3002
-# or
-http://192.168.1.10:3002
-```
-
-Compatible backends: [esplora](https://github.com/Blockstream/esplora), [mempool.space](https://github.com/mempool/mempool), any Esplora-compatible API.
-
----
-
-## Fiat currency display
-
-Go to **⚙️ Settings → 💱 Fiat currency** and select from 21 supported currencies (USD, EUR, GBP, CAD, AUD, CHF, JPY, and more). Once saved, approximate fiat values appear alongside all BTC and sat amounts on the Dashboard, UTXO Explorer, Spend Planner, and Consolidation Planner.
-
-Prices are fetched from mempool.space and cached for 5 minutes. No API key is required.
+- [x] Taproot (P2TR / BIP86) support
+- [x] Fiat currency conversion (21 currencies)
+- [x] Plan History
+- [x] Fee rate history chart
+- [ ] Screenshots in README
+- [ ] Descriptor wallets
+- [ ] PSBT export (view-only)
+- [ ] Tauri desktop packaging (.exe / .dmg)
+- [ ] Multi-wallet label sync (BIP329)
+- [ ] Multi-wallet unified dashboard
+- [ ] Lightning channel awareness
 
 ---
 
-## Importing BIP329 labels
+## Contributing
 
-You can export labels from Sparrow Wallet, Specter Desktop, or other BIP329-compatible wallets as a `.jsonl` file, then import them in the UTXO Explorer screen. Labels are stored only in the local SQLite database.
+Contributions are welcome. UTXO Pilot is open source under GPLv3.
 
----
+**To contribute:**
 
-## Privacy
+1. Fork the repository on GitHub
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Make your changes
+4. Test with `npm run dev` and the seed data (`npm run seed --workspace=packages/backend`)
+5. Open a pull request with a clear description of what changed and why
 
-- xpubs are stored in the local SQLite database only.
-- When using a **public Esplora endpoint**, your addresses are sent to a third-party server. A yellow warning banner is shown at all times.
-- xpubs and addresses are **not logged** in server logs.
-- No telemetry, no analytics, no accounts.
+**Bug reports and feature requests:**  
+Use the in-app feedback form (sidebar → 🐛 Feedback & Bugs) or open an issue directly at [github.com/ramcone/utxo-pilot/issues](https://github.com/ramcone/utxo-pilot/issues).
 
----
-
-## Security notes
-
-- **Never enter a seed phrase or private key.** UTXO Pilot only accepts extended public keys.
-- The backend only listens on `127.0.0.1` — it is not accessible from other machines.
-- The SQLite database is stored at `packages/backend/data/utxo-pilot.db` by default.
-
----
-
-## Supported wallet formats
-
-| Format | Script type | BIP | Address format |
-|--------|-------------|-----|----------------|
-| `zpub` | P2WPKH (native segwit) | BIP84 | `bc1q…` |
-| `ypub` | P2SH-P2WPKH (wrapped segwit) | BIP49 | `3…` |
-| `xpub` | P2PKH (legacy) | BIP44 | `1…` |
-| `xpub` + Taproot flag | P2TR (Taproot) | BIP86 | `bc1p…` |
-
-**Ledger note:** Ledger Live exports `xpub` version bytes for all account types including Native SegWit and Taproot. Use the built-in converter on the Import Wallet page to get the correct key format — it derives the first address so you can verify it matches your wallet before importing.
-
-Descriptors are planned for a future release.
+**Please do not submit pull requests that:**
+- Add private key handling, signing, or broadcasting of any kind
+- Add cloud storage, telemetry, or external accounts
+- Break the local-first, watch-only design principles
 
 ---
 
@@ -284,14 +290,36 @@ Change `PORT=3002` in `packages/backend/.env`.
 
 ---
 
-## Roadmap
+## API reference
 
-- [x] Taproot (P2TR / BIP86) support
-- [ ] Descriptor wallets
-- [ ] PSBT export (view-only)
-- [ ] Tauri desktop packaging
-- [ ] Multi-wallet label sync (BIP329)
-- [ ] Lightning channel awareness
+All endpoints are under `http://localhost:3001/api`.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET    | /wallets | List wallets |
+| POST   | /wallets | Import wallet (name + pub) |
+| DELETE | /wallets/:id | Remove wallet + all data |
+| GET    | /wallets/:id | Wallet detail + stats |
+| POST   | /wallets/:id/sync | Trigger address sync |
+| GET    | /wallets/:id/sync/status | Sync progress |
+| GET    | /wallets/:id/utxos | UTXO list (filterable) |
+| GET    | /wallets/:id/balance | Balance summary |
+| GET    | /fees | Current fee rates |
+| GET    | /fees/history?range=1h\|1d\|1w\|1m\|1y | Fee rate history chart data |
+| GET    | /price?currency=USD | Live BTC price in the given fiat currency |
+| GET    | /wallets/:id/labels | Labels list |
+| POST   | /wallets/:id/labels | Upsert a label |
+| POST   | /wallets/:id/labels/import | Import BIP329 JSONL |
+| POST   | /wallets/:id/plans/spend | Create spend plan |
+| POST   | /wallets/:id/plans/consolidation | Create consolidation plan |
+| GET    | /wallets/:id/plans | List plans for a wallet |
+| GET    | /plans/:id | Plan detail |
+| GET    | /plans/:id/export?format=json | Export plan as JSON |
+| GET    | /plans/:id/export?format=csv | Export plan as CSV |
+| GET    | /settings | App settings |
+| PUT    | /settings | Update settings |
+| POST   | /settings/test-esplora | Test Esplora connectivity |
+| POST   | /convert-pub | Convert xpub → zpub / ypub, or preview Taproot addresses |
 
 ---
 
@@ -300,16 +328,6 @@ Change `PORT=3002` in `packages/backend/.env`.
 Use the in-app feedback form (sidebar → 🐛 Feedback & Bugs) to submit bug reports and feature requests directly to GitHub Issues.
 
 GitHub repository: [github.com/ramcone/utxo-pilot](https://github.com/ramcone/utxo-pilot)
-
----
-
-## Configuring the GitHub feedback link
-
-Open `packages/frontend/src/config.ts` and confirm the repo is set correctly:
-
-```ts
-export const GITHUB_REPO = 'ramcone/utxo-pilot';
-```
 
 ---
 
