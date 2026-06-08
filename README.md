@@ -15,8 +15,9 @@ Key features:
 - UTXO Explorer with filtering, sorting, and manual labels (BIP329 import supported)
 - Spend Planner with fee-first and privacy-first coin selection modes
 - Consolidation Planner with fee comparison across urgency tiers
+- Plan History — browse all previously generated spend and consolidation plans
 - Live fee rate panel and fee rate history chart (1H / 1D / 1W / 1M / 1Y)
-- Fiat currency conversion (21 currencies) shown alongside all BTC and sat amounts
+- Fiat currency conversion (21 currencies) shown alongside all BTC and sat amounts, including on plan summaries
 - JSON and CSV plan export with a signing checklist
 - Taproot (P2TR / BIP86) support including Ledger xpub conversion
 - In-app Getting Started guide and bug report form (GitHub Issues)
@@ -109,7 +110,7 @@ utxo-pilot/
 │           ├── hooks/        # useBTCPrice
 │           ├── pages/        # Welcome, ImportWallet, DataSource, Dashboard,
 │           │                 # UTXOExplorer, SpendPlanner, ConsolidationPlanner,
-│           │                 # PlanReview, Settings, Setup, WhyUTXOPilot, Feedback
+│           │                 # PlanReview, PlanHistory, Settings, Setup, WhyUTXOPilot, Feedback
 │           ├── store/        # Zustand stores (wallet, plan)
 │           ├── currencies.ts # Supported fiat currencies + formatting helpers
 │           └── config.ts     # GitHub repo URL (update before deploying)
