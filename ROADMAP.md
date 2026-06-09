@@ -38,6 +38,13 @@ The first public release. A fully functional local-first UTXO planning tool.
 - [x] In-app bug report / feature request form (GitHub Issues)
 - [x] Settings: thresholds, data source, fiat currency
 - [x] Local SQLite database with auto-migration
+- [x] One-click demo mode — 34 realistic UTXOs across 5 accumulation patterns, no xpub needed
+- [x] Spend Planner unit selector — enter amounts in sats, BTC, or fiat currency
+- [x] Dashboard small UTXO threshold slider
+- [x] Fiat values on plan review summaries (send amount, output, fee)
+- [x] Plan History — browse all past spend and consolidation plans
+- [x] Screenshots in README
+- [x] Trust files — SECURITY.md, PRIVACY.md, CONTRIBUTING.md, DISCLAIMER.md, ROADMAP.md
 
 ---
 
@@ -63,7 +70,6 @@ Focus: richer data, better UX, packaging.
 **App**
 - [ ] Tauri desktop packaging — native .exe (Windows), .dmg (macOS), .AppImage (Linux)
 - [ ] Dark / light theme toggle
-- [ ] Screenshots in README and release notes
 - [ ] macOS and Linux installation testing and documentation
 
 ---

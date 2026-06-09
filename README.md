@@ -114,7 +114,63 @@ Delete the demo wallet from **Settings → Manage Wallets** when you are ready t
 
 ## Screenshots
 
-> Screenshots will be added in a future update. In the meantime, run the app in demo mode (`npm run seed`) to explore the full UI with sample data.
+All screenshots taken using the built-in demo wallet with sample data. No real funds.
+
+---
+
+### 🏠 Dashboard
+
+![Dashboard](screenshots/01-dashboard.png)
+
+The main hub. Shows total balance with live fiat conversion, UTXO count, small UTXO count with an adjustable threshold slider, current fee rates across three urgency tiers, and a live fee rate history chart spanning up to 1 year. The demo mode banner reminds you no real funds are involved, with a direct link to import your own wallet.
+
+---
+
+### 🔬 UTXO Explorer
+
+![UTXO Explorer](screenshots/02-utxo-explorer.png)
+
+A full table of every unspent output in the wallet. Each row shows the TXID, address, amount in BTC and sats, how long ago it was confirmed, its label (colour-coded by category — Strike DCA, Coinbase DCA, Mining, Business income, Cold storage), and its status. Filterable by spent/unspent, min/max amount, and sortable by amount, age, or label.
+
+---
+
+### 🚀 Spend Planner
+
+![Spend Planner](screenshots/03-spend-planner.png)
+
+Enter an amount in **sats, BTC, or your chosen fiat currency** — the app converts automatically and shows the equivalent in all three units as you type. Select fee urgency (next block, ~30 min, ~1 hour) and coin selection mode (Minimise Fee or Minimise Privacy Leakage). The available balance is shown with live fiat value. A Max button fills the full balance in whichever unit is selected.
+
+---
+
+### 🧹 Consolidation Planner
+
+![Consolidation Planner](screenshots/04-consolidation-planner.png)
+
+Set a satoshi threshold — all UTXOs below it become consolidation candidates. The app shows how many UTXOs qualify and the total balance with fiat equivalent. Choose fee urgency (~1 hour is recommended for consolidations to keep costs low) and enter the destination address. The plan is generated locally — nothing is signed or broadcast.
+
+---
+
+### 📋 Plan History
+
+![Plan History](screenshots/05-plan-history.png)
+
+A log of every spend and consolidation plan ever generated for the active wallet. Each entry shows the plan type, amount, estimated fee, fee rate, and when it was created. Click **View →** on any row to re-open the full plan with its input table, signing checklist, and JSON/CSV export buttons.
+
+---
+
+### ➕ Import Wallet
+
+![Import Wallet](screenshots/06-import-wallet.png)
+
+Paste your extended public key — zpub (Native SegWit, recommended), ypub (Wrapped SegWit), or xpub (Legacy or Taproot). If you paste an xpub, a converter appears offering one-click conversion to zpub, ypub, or Taproot (BIP86) mode, with the first derived address shown for verification. Seed phrases and private keys are never accepted.
+
+---
+
+### 🔌 Data Source
+
+![Data Source](screenshots/07-data-source.png)
+
+Choose where UTXO Pilot fetches blockchain data. Quick presets for Blockstream (public), mempool.space (public), or a custom self-hosted Esplora endpoint. A privacy notice explains that public endpoints receive your wallet addresses. Mark any endpoint as public to keep the warning banner active, or switch to your own node to remove it entirely.
 
 ---
 
@@ -220,7 +276,7 @@ utxo-pilot/
 │   │   ├── src/
 │   │   │   ├── db/           # Database init + migrations
 │   │   │   ├── routes/       # wallets, sync, utxos, fees, feeHistory, price,
-│   │   │   │                 # labels, plans, export, settings, convert
+│   │   │   │                 # labels, plans, export, settings, convert, demo
 │   │   │   └── services/     # derivation, esplora, coinSelection, consolidation
 │   │   ├── fixtures/         # Dev seed data
 │   │   └── data/             # SQLite file created at runtime (git-ignored)
@@ -236,7 +292,13 @@ utxo-pilot/
 │           ├── store/        # Zustand stores (wallet, plan)
 │           ├── currencies.ts # Supported fiat currencies + formatting helpers
 │           └── config.ts     # GitHub repo URL (update before deploying)
+├── screenshots/              # README screenshots (demo wallet)
 ├── .gitignore
+├── CONTRIBUTING.md
+├── DISCLAIMER.md
+├── PRIVACY.md
+├── ROADMAP.md
+├── SECURITY.md
 └── README.md
 ```
 
@@ -262,7 +324,7 @@ utxo-pilot/
 - [x] Demo mode — one-click, 34 realistic UTXOs, no xpub needed
 - [x] Spend Planner — enter amounts in sats, BTC, or fiat currency
 - [x] Trust files — SECURITY.md, PRIVACY.md, CONTRIBUTING.md, DISCLAIMER.md
-- [ ] Screenshots in README
+- [x] Screenshots in README
 - [ ] Descriptor wallets
 - [ ] PSBT export (view-only)
 - [ ] Tauri desktop packaging (.exe / .dmg)
