@@ -17,6 +17,7 @@ const settings_js_1 = require("./routes/settings.js");
 const feeHistory_js_1 = require("./routes/feeHistory.js");
 const price_js_1 = require("./routes/price.js");
 const convert_js_1 = require("./routes/convert.js");
+const demo_js_1 = require("./routes/demo.js");
 const database_js_1 = require("./db/database.js");
 const PORT = parseInt(process.env.PORT ?? '3001', 10);
 const LOG_LEVEL = (process.env.LOG_LEVEL ?? 'info');
@@ -57,6 +58,7 @@ async function start() {
     await app.register(feeHistory_js_1.feeHistoryRoutes);
     await app.register(price_js_1.priceRoutes);
     await app.register(convert_js_1.convertRoutes);
+    await app.register(demo_js_1.demoRoutes);
     // Health check
     app.get('/api/health', async () => ({ ok: true, version: '0.1.0' }));
     // Initialise DB on startup (runs migrations)
