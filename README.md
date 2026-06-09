@@ -6,6 +6,8 @@
 GitHub: [github.com/ramcone/utxo-pilot](https://github.com/ramcone/utxo-pilot)  
 License: GNU General Public License v3.0
 
+[PRIVACY.md](PRIVACY.md) · [SECURITY.md](SECURITY.md) · [DISCLAIMER.md](DISCLAIMER.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [ROADMAP.md](ROADMAP.md)
+
 ---
 
 ## What it does
