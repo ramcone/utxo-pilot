@@ -71,4 +71,7 @@ export const api = {
     testEsplora: (url: string)  => post<any>('/settings/test-esplora', { url }),
   },
   health: () => get<{ ok: boolean; version: string }>('/health'),
+  demo: {
+    seed: () => post<{ wallet_id: number; wallet_name: string; wallet: any }>('/demo/seed'),
+  },
 };

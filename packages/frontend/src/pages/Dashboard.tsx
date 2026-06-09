@@ -100,8 +100,29 @@ export default function Dashboard() {
     thresholdMut.mutate(value);
   };
 
+  const isDemo = wallet?.name?.includes('Demo Wallet');
+
   return (
     <div className="page">
+      {/* Demo mode banner */}
+      {isDemo && (
+        <div className="alert" style={{
+          background: 'rgba(247,147,26,0.10)',
+          borderColor: 'rgba(247,147,26,0.35)',
+          color: 'var(--text)',
+          marginBottom: 16,
+          display: 'flex',
+          gap: 10,
+          alignItems: 'center',
+        }}>
+          <span style={{ fontSize: '1.1rem' }}>🎮</span>
+          <div style={{ flex: 1 }}>
+            <strong>Demo mode</strong> — all data is fake and for exploration only. No real funds are involved.
+            {' '}Ready to use real data? <a href="/import" style={{ color: 'var(--accent)' }}>Import your wallet →</a>
+          </div>
+        </div>
+      )}
+
       <div className="page-header flex justify-between items-center" style={{ display: 'flex' }}>
         <div>
           <h2>{wallet?.name ?? 'Dashboard'}</h2>
@@ -109,23 +130,44 @@ export default function Dashboard() {
             {wallet?.pub_type?.toUpperCase()} · {wallet?.script_type} · Last sync: {lastSync}
           </p>
         </div>
-        <button
-          className="btn btn-secondary"
-          onClick={() => syncMut.mutate()}
-          disabled={isRunning || syncMut.isPending}
-        >
-          {isRunning ? <><span className="spinner" /> Syncing…</> : '↻ Sync Now'}
-        </button>
+        {isDemo ? (
+          <button
+            className="btn btn-secondary"
+            disabled
+            title="Sync is not available in demo mode — data is pre-loaded"
+            style={{ opacity: 0.5, cursor: 'not-allowed' }}
+          >
+            ↻ Sync Now
+          </button>
+        ) : (
+          <button
+            className="btn btn-secondary"
+            onClick={() => syncMut.mutate()}
+            disabled={isRunning || syncMut.isPending}
+          >
+            {isRunning ? <><span className="spinner" /> Syncing…</> : '↻ Sync Now'}
+          </button>
+        )}
       </div>
 
-      {isRunning && (
+      {isDemo && (
+        <div className="alert mb-4" style={{ background: 'rgba(247,147,26,0.08)', borderColor: 'rgba(247,147,26,0.3)' }}>
+          <span>🎮</span>
+          <span>
+            <strong>Sync is not available in demo mode.</strong> The demo wallet uses pre-loaded sample data — there is no real xpub to sync.
+            {' '}<a href="/import" style={{ color: 'var(--accent)' }}>Import your own wallet</a> to use live sync.
+          </span>
+        </div>
+      )}
+
+      {!isDemo && isRunning && (
         <div className="alert alert-info mb-4">
           <span className="spinner" />
           <span>{syncStatus?.progress ?? 'Syncing addresses…'}</span>
         </div>
       )}
 
-      {syncStatus?.error && (
+      {!isDemo && syncStatus?.error && (
         <div className="alert alert-error mb-4">⚠ Sync error: {syncStatus.error}</div>
       )}
 
