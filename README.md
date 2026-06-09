@@ -18,13 +18,14 @@ UTXO Pilot helps self-custody Bitcoin users plan spends and consolidations *befo
 
 Key features:
 - UTXO Explorer with filtering, sorting, and manual labels (BIP329 import supported)
-- Spend Planner with fee-first and privacy-first coin selection modes
+- Spend Planner with fee-first and privacy-first coin selection modes; enter amounts in sats, BTC, or your chosen fiat currency
 - Consolidation Planner with fee comparison across urgency tiers
 - Plan History — browse all previously generated spend and consolidation plans
 - Live fee rate panel and fee rate history chart (1H / 1D / 1W / 1M / 1Y)
 - Fiat currency conversion (21 currencies) shown alongside all BTC and sat amounts, including on plan summaries
 - JSON and CSV plan export with a signing checklist
 - Taproot (P2TR / BIP86) support including Ledger xpub conversion
+- One-click demo mode with 34 realistic pre-loaded UTXOs — no xpub needed
 - In-app Getting Started guide and bug report form (GitHub Issues)
 
 ---
@@ -82,13 +83,30 @@ The worst-case outcome of using UTXO Pilot is that someone learns your Bitcoin b
 
 ## Demo mode
 
-Not ready to import your real wallet? Run the built-in demo first:
+Not ready to import your real wallet? Try demo mode first — no xpub required.
 
-```powershell
+**Option 1 — one click from the app:**  
+Open the app, and on the Welcome screen click **🎮 Try Demo Mode →**. The demo wallet loads instantly and you land directly on the Dashboard.
+
+**Option 2 — from the terminal:**
+
+```bash
 npm run seed --workspace=packages/backend
 ```
 
-This populates the app with a demo wallet and 7 sample UTXOs so you can explore every screen — Dashboard, UTXO Explorer, Spend Planner, Consolidation Planner, Plan History — without connecting a real wallet or exposing any real data.
+Then open the app and select **Demo Wallet — Sample Data** from the wallet picker.
+
+The demo wallet contains **34 realistic fake UTXOs** across five common accumulation patterns:
+
+| Label | Pattern | UTXOs |
+|-------|---------|-------|
+| Strike - DCA | Small weekly buys over 12 weeks | 12 |
+| Coinbase - DCA | Medium monthly exchange withdrawals | 6 |
+| Mining | Tiny pool payouts | 10 |
+| Business income | Larger irregular payments | 4 |
+| Cold storage | Long-term savings UTXOs | 2 |
+
+Every screen — Dashboard, UTXO Explorer, Spend Planner, Consolidation Planner, Plan History — has realistic data to explore. Sync is disabled in demo mode (there is no real wallet to query).
 
 Delete the demo wallet from **Settings → Manage Wallets** when you are ready to import your own.
 
@@ -241,6 +259,9 @@ utxo-pilot/
 - [x] Fiat currency conversion (21 currencies)
 - [x] Plan History
 - [x] Fee rate history chart
+- [x] Demo mode — one-click, 34 realistic UTXOs, no xpub needed
+- [x] Spend Planner — enter amounts in sats, BTC, or fiat currency
+- [x] Trust files — SECURITY.md, PRIVACY.md, CONTRIBUTING.md, DISCLAIMER.md
 - [ ] Screenshots in README
 - [ ] Descriptor wallets
 - [ ] PSBT export (view-only)
@@ -322,6 +343,7 @@ All endpoints are under `http://localhost:3001/api`.
 | PUT    | /settings | Update settings |
 | POST   | /settings/test-esplora | Test Esplora connectivity |
 | POST   | /convert-pub | Convert xpub → zpub / ypub, or preview Taproot addresses |
+| POST   | /demo/seed | Seed the demo wallet (idempotent — safe to call multiple times) |
 
 ---
 
