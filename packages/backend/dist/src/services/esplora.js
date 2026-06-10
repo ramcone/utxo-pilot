@@ -35,6 +35,14 @@ class EsploraClient {
         return this.get(`/address/${address}/utxo`);
     }
     /**
+     * Get address summary stats. Used to decide whether an address has any
+     * history at all (gap-limit scanning must count *used* addresses, not
+     * just addresses that currently hold UTXOs).
+     */
+    async getAddressInfo(address) {
+        return this.get(`/address/${address}`);
+    }
+    /**
      * Get confirmed transactions for an address.
      * Esplora returns max 25; paginate using last_seen_txid.
      */

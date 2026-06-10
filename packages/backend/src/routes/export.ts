@@ -10,15 +10,16 @@ export async function exportRoutes(app: FastifyInstance) {
       const plan = db.prepare('SELECT * FROM plans WHERE id = ?').get(req.params.planId) as Plan | undefined;
       if (!plan) return reply.status(404).send({ error: 'Plan not found' });
 
-      const inputs = db.prepare('SELECT * FROM plan_inputs WHERE plan_id = ?').all(plan.id) as PlanInput[];
-
-      const inputsWithLabels = inputs.map((inp) => {
-        const ref = `${inp.txid}:${inp.vout}`;
-        const lbl = db.prepare(
-          "SELECT name FROM labels WHERE wallet_id = ? AND ref = ? AND label_type = 'output'"
-        ).get(plan.wallet_id, ref) as { name: string } | undefined;
-        return { ...inp, label: lbl?.name ?? '' };
-      });
+      // Single query: join labels onto inputs instead of one lookup per input
+      const inputsWithLabels = db.prepare(`
+        SELECT pi.*, COALESCE(l.name, '') AS label
+        FROM plan_inputs pi
+        LEFT JOIN labels l
+          ON l.wallet_id = ?
+          AND l.ref = (pi.txid || ':' || pi.vout)
+          AND l.label_type = 'output'
+        WHERE pi.plan_id = ?
+      `).all(plan.wallet_id, plan.id) as (PlanInput & { label: string })[];
 
       const format = req.query.format ?? 'json';
 

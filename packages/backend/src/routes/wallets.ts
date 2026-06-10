@@ -16,7 +16,7 @@ export async function walletRoutes(app: FastifyInstance) {
     const db = getDb();
     const wallets = db.prepare('SELECT * FROM wallets ORDER BY created_at DESC').all() as Wallet[];
     // Do not expose the normalised xpub in list response
-    return reply.send(wallets.map(({ ...w }) => ({ ...w, original_pub: '[redacted]' })));
+    return reply.send(wallets.map((w) => ({ ...w, original_pub: '[redacted]' })));
   });
 
   // Get single wallet (with stats)
@@ -67,6 +67,10 @@ export async function walletRoutes(app: FastifyInstance) {
 
     const db = getDb();
     const now = Date.now();
+    const gapLimit = parseInt(
+      (db.prepare("SELECT value FROM settings WHERE key = 'default_gap_limit'").get() as { value: string } | undefined)?.value ?? '20',
+      10
+    );
     const result = db.prepare(`
       INSERT INTO wallets (name, original_pub, pub_type, script_type, derivation_path, gap_limit, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -76,7 +80,7 @@ export async function walletRoutes(app: FastifyInstance) {
       parsed.pubType,
       parsed.scriptType,
       parsed.derivationPath,
-      20,
+      gapLimit,
       now
     );
 

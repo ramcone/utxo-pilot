@@ -56,13 +56,6 @@ export function planConsolidation(
 
   const warnings = buildConsolidationWarnings(candidates, fee, totalIn, feeRate);
 
-  const feeComparison = {
-    fastest:   feeTier(numInputs, feeRates.fastest),
-    half_hour: feeTier(numInputs, feeRates.half_hour),
-    hour:      feeTier(numInputs, feeRates.hour),
-  };
-
-  // Adjust feeComparison outputs for each tier
   const makeTier = (rate: number) => {
     const f = estimateFee(numInputs, numOutputs, rate);
     return { feeRate: rate, fee: f, output: Math.max(0, totalIn - f) };
@@ -79,11 +72,6 @@ export function planConsolidation(
       hour:      makeTier(feeRates.hour),
     },
   };
-}
-
-function feeTier(numInputs: number, feeRate: number) {
-  const fee = estimateFee(numInputs, 1, feeRate);
-  return { feeRate, fee, output: 0 };
 }
 
 function buildConsolidationWarnings(

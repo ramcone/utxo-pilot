@@ -26,12 +26,6 @@ function planConsolidation(utxos, thresholdSats, feeRates, urgency) {
         return null; // fee exceeds total — consolidation not economical
     }
     const warnings = buildConsolidationWarnings(candidates, fee, totalIn, feeRate);
-    const feeComparison = {
-        fastest: feeTier(numInputs, feeRates.fastest),
-        half_hour: feeTier(numInputs, feeRates.half_hour),
-        hour: feeTier(numInputs, feeRates.hour),
-    };
-    // Adjust feeComparison outputs for each tier
     const makeTier = (rate) => {
         const f = (0, coinSelection_js_1.estimateFee)(numInputs, numOutputs, rate);
         return { feeRate: rate, fee: f, output: Math.max(0, totalIn - f) };
@@ -47,10 +41,6 @@ function planConsolidation(utxos, thresholdSats, feeRates, urgency) {
             hour: makeTier(feeRates.hour),
         },
     };
-}
-function feeTier(numInputs, feeRate) {
-    const fee = (0, coinSelection_js_1.estimateFee)(numInputs, 1, feeRate);
-    return { feeRate, fee, output: 0 };
 }
 function buildConsolidationWarnings(candidates, fee, totalIn, feeRate) {
     const warnings = [];

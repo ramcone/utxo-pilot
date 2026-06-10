@@ -37,6 +37,9 @@ export async function feeRoutes(app: FastifyInstance) {
       `).run(snapshot.fetched_at, snapshot.fastest, snapshot.half_hour, snapshot.hour, snapshot.minimum);
       snapshot.id = res.lastInsertRowid as number;
 
+      // Only the 1H chart reads local snapshots — prune anything older than 7 days
+      db.prepare('DELETE FROM fee_snapshots WHERE fetched_at < ?').run(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
       feeCache = { snapshot, expiresAt: Date.now() + 60_000 };
       return reply.send(snapshot);
     } catch (err: any) {

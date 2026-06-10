@@ -59,7 +59,7 @@ export function selectCoins(
     const fee = estimateFee(selected.length, 2, feeRateSatVb);
     if (inputTotal >= targetSats + fee) {
       const change = inputTotal - targetSats - fee;
-      const warnings = buildWarnings(selected, mode, change, feeRateSatVb);
+      const warnings = buildWarnings(selected, mode, targetSats);
 
       // If change is dust (< ~546 sat P2WPKH), fold it into fee
       if (change > 0 && change < 546) {
@@ -121,10 +121,18 @@ function sortPrivacyFirst(utxos: UTXOWithLabel[], targetSats: number): UTXOWithL
 function buildWarnings(
   selected: UTXOWithLabel[],
   mode: 'fee-first' | 'privacy-first',
-  _change: number,
-  _feeRate: number
+  targetSats: number
 ): string[] {
   const warnings: string[] = [];
+
+  const largest = Math.max(...selected.map((u) => u.amount));
+  if (largest >= targetSats * 10) {
+    warnings.push(
+      `The largest selected UTXO (${largest.toLocaleString()} sats) is more than 10× the send amount. ` +
+        'This creates a large change output and publicly links that coin to this payment. ' +
+        'If privacy matters, consider spending from smaller UTXOs instead.'
+    );
+  }
 
   const labels = new Set(selected.map((u) => u.label).filter(Boolean));
   if (labels.size > 1) {

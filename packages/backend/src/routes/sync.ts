@@ -6,6 +6,28 @@
 import { FastifyInstance } from 'fastify';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Run an Esplora request, retrying once after 10s if the endpoint rate-limits us. */
+async function withEsploraRetry<T>(
+  fn: () => Promise<T>,
+  index: number,
+  setState: (progress: string) => void
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (String(err).includes('429')) {
+      setState(`Rate limited — waiting 10s before retrying #${index}…`);
+      await sleep(10_000);
+      try {
+        return await fn();
+      } catch (err2) {
+        throw new Error(`Esplora request failed: ${err2}`);
+      }
+    }
+    throw new Error(`Esplora request failed: ${err}`);
+  }
+}
 import { getDb } from '../db/database.js';
 import { deriveAddress } from '../services/derivation.js';
 import { EsploraClient } from '../services/esplora.js';
@@ -91,31 +113,20 @@ async function runSync(
         'INSERT OR IGNORE INTO addresses (wallet_id, address, derivation_index, is_change) VALUES (?, ?, ?, ?)'
       ).run(walletId, address, index, isChange ? 1 : 0);
 
-      // Fetch UTXOs — small delay to avoid rate limiting on public endpoints
+      // Small delay to avoid rate limiting on public endpoints
       await sleep(300);
-      let utxos;
-      try {
-        utxos = await client.getAddressUTXOs(address);
-      } catch (err: any) {
-        // Retry once on 429
-        if (String(err).includes('429')) {
-          setState(`Rate limited — waiting 10s before retrying #${index}…`);
-          await sleep(10_000);
-          try {
-            utxos = await client.getAddressUTXOs(address);
-          } catch (err2) {
-            throw new Error(`Esplora request failed: ${err2}`);
-          }
-        } else {
-          throw new Error(`Esplora request failed: ${err}`);
-        }
-      }
 
-      if (utxos.length > 0) {
-        gap = 0; // reset gap on activity
+      // Gap limit must count *used* addresses (any history), not just addresses
+      // that currently hold UTXOs — an address whose coins were all spent is
+      // still used and must not terminate the scan.
+      const info = await withEsploraRetry(() => client.getAddressInfo(address), index, setState);
+      const txCount = info.chain_stats.tx_count + info.mempool_stats.tx_count;
+
+      if (txCount > 0) {
+        gap = 0; // reset gap on any history
         db.prepare('UPDATE addresses SET used = 1 WHERE wallet_id = ? AND address = ?').run(walletId, address);
 
-        // Upsert UTXOs
+        const utxos = await withEsploraRetry(() => client.getAddressUTXOs(address), index, setState);
         const upsert = db.prepare(`
           INSERT OR IGNORE INTO utxos (wallet_id, txid, vout, address, amount, block_height, block_time)
           VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -139,6 +150,10 @@ async function runSync(
             INSERT OR IGNORE INTO transactions (wallet_id, txid, block_height, block_time, fee)
             VALUES (?, ?, ?, ?, ?)
           `);
+          const markSpent = db.prepare(`
+            UPDATE utxos SET spent = 1, spent_txid = ?
+            WHERE wallet_id = ? AND txid = ? AND vout = ? AND spent = 0
+          `);
           for (const tx of txs) {
             insertTx.run(
               walletId,
@@ -150,10 +165,7 @@ async function runSync(
 
             // Mark UTXOs spent if they appear as inputs
             for (const vin of tx.vin) {
-              db.prepare(`
-                UPDATE utxos SET spent = 1, spent_txid = ?
-                WHERE wallet_id = ? AND txid = ? AND vout = ? AND spent = 0
-              `).run(tx.txid, walletId, vin.txid, vin.vout);
+              markSpent.run(tx.txid, walletId, vin.txid, vin.vout);
             }
           }
         } catch {

@@ -15,7 +15,7 @@ async function walletRoutes(app) {
         const db = (0, database_js_1.getDb)();
         const wallets = db.prepare('SELECT * FROM wallets ORDER BY created_at DESC').all();
         // Do not expose the normalised xpub in list response
-        return reply.send(wallets.map(({ ...w }) => ({ ...w, original_pub: '[redacted]' })));
+        return reply.send(wallets.map((w) => ({ ...w, original_pub: '[redacted]' })));
     });
     // Get single wallet (with stats)
     app.get('/api/wallets/:id', async (req, reply) => {
@@ -50,11 +50,12 @@ async function walletRoutes(app) {
         }
         const db = (0, database_js_1.getDb)();
         const now = Date.now();
+        const gapLimit = parseInt(db.prepare("SELECT value FROM settings WHERE key = 'default_gap_limit'").get()?.value ?? '20', 10);
         const result = db.prepare(`
       INSERT INTO wallets (name, original_pub, pub_type, script_type, derivation_path, gap_limit, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(body.data.name, body.data.pub.trim(), // store original for display; never log it
-        parsed.pubType, parsed.scriptType, parsed.derivationPath, 20, now);
+        parsed.pubType, parsed.scriptType, parsed.derivationPath, gapLimit, now);
         // Store the normalised xpub in settings keyed by wallet id (for derivation use only)
         db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)").run(`wallet_xpub_${result.lastInsertRowid}`, parsed.xpubNormalized);
         const wallet = db.prepare('SELECT * FROM wallets WHERE id = ?').get(result.lastInsertRowid);

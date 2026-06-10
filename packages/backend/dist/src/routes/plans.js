@@ -71,10 +71,13 @@ async function planRoutes(app) {
                 error: 'Not enough small UTXOs to consolidate, or the fee would exceed the total value.',
             });
         }
+        // Store the rate the fee was actually computed with (snapshot rate for the
+        // chosen urgency), not the client-sent rate — they can drift apart.
+        const usedFeeRate = feeRates[body.data.urgency];
         const planId = db.prepare(`
       INSERT INTO plans (wallet_id, plan_type, destination, fee_rate, estimated_fee, estimated_output, warnings, created_at)
       VALUES (?, 'consolidation', ?, ?, ?, ?, ?, ?)
-    `).run(walletId, body.data.destination, body.data.fee_rate, result.estimatedFee, result.outputAmount, JSON.stringify(result.warnings), Date.now()).lastInsertRowid;
+    `).run(walletId, body.data.destination, usedFeeRate, result.estimatedFee, result.outputAmount, JSON.stringify(result.warnings), Date.now()).lastInsertRowid;
         const insertInput = db.prepare('INSERT INTO plan_inputs (plan_id, txid, vout, amount) VALUES (?, ?, ?, ?)');
         for (const u of result.candidates) {
             insertInput.run(planId, u.txid, u.vout, u.amount);
@@ -93,14 +96,20 @@ async function planRoutes(app) {
         const plan = db.prepare('SELECT * FROM plans WHERE id = ?').get(req.params.planId);
         if (!plan)
             return reply.status(404).send({ error: 'Plan not found' });
-        const inputs = db.prepare('SELECT * FROM plan_inputs WHERE plan_id = ?').all(plan.id);
-        // Build label map for inputs
+        // Single query: join labels onto inputs instead of one lookup per input
+        const inputs = db.prepare(`
+      SELECT pi.*, l.name AS label
+      FROM plan_inputs pi
+      LEFT JOIN labels l
+        ON l.wallet_id = ?
+        AND l.ref = (pi.txid || ':' || pi.vout)
+        AND l.label_type = 'output'
+      WHERE pi.plan_id = ?
+    `).all(plan.wallet_id, plan.id);
         const inputLabels = {};
         for (const inp of inputs) {
-            const ref = `${inp.txid}:${inp.vout}`;
-            const lbl = db.prepare("SELECT name FROM labels WHERE wallet_id = ? AND ref = ? AND label_type = 'output'").get(plan.wallet_id, ref);
-            if (lbl)
-                inputLabels[ref] = lbl.name;
+            if (inp.label)
+                inputLabels[`${inp.txid}:${inp.vout}`] = inp.label;
         }
         return reply.send({ ...plan, inputs, input_labels: inputLabels });
     });

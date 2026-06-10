@@ -65,6 +65,18 @@ export class EsploraClient {
   }
 
   /**
+   * Get address summary stats. Used to decide whether an address has any
+   * history at all (gap-limit scanning must count *used* addresses, not
+   * just addresses that currently hold UTXOs).
+   */
+  async getAddressInfo(address: string): Promise<{
+    chain_stats: { tx_count: number; funded_txo_count: number };
+    mempool_stats: { tx_count: number };
+  }> {
+    return this.get(`/address/${address}`);
+  }
+
+  /**
    * Get confirmed transactions for an address.
    * Esplora returns max 25; paginate using last_seen_txid.
    */
