@@ -23,7 +23,7 @@ The following is stored:
 | Labels you add to UTXOs or transactions | Local SQLite | Stored only locally |
 | Spend and consolidation plans | Local SQLite | Stored only locally |
 | App settings (thresholds, data source, fiat currency) | Local SQLite | Never transmitted |
-| Fee rate snapshots | Local SQLite | From mempool.space, no wallet data included |
+| Fee rate snapshots | Local SQLite | From your Esplora endpoint; pruned after 7 days |
 
 **Nothing in this list is ever sent to any external server by UTXO Pilot itself.**
 
@@ -55,7 +55,7 @@ UTXO Pilot shows a **persistent yellow warning banner** whenever a public endpoi
 
 ### When fetching fee rates
 
-Fee rate data is fetched from mempool.space (`/api/v1/fees/recommended`). This request contains **no wallet information** — it is a general market data request, no different from visiting mempool.space in a browser.
+Current fee rates are fetched from your configured Esplora endpoint (`/fee-estimates`). Fee rate *history* for the chart is fetched from mempool.space. Neither request contains **any wallet information** — they are general market data requests, no different from visiting those sites in a browser.
 
 ### When fetching BTC price
 
