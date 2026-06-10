@@ -37,6 +37,9 @@ export default function Layout() {
   });
 
   const isPublic = settings?.esplora_is_public === 'true';
+  // Demo wallet never syncs, so no addresses are sent anywhere — suppress the privacy banner
+  const activeWallet = wallets.find((w: any) => w.id === activeWalletId);
+  const isDemo = activeWallet?.name?.includes('Demo Wallet') ?? false;
 
   return (
     <div className="app-shell">
@@ -101,7 +104,7 @@ export default function Layout() {
       </aside>
 
       <main className="main">
-        {isPublic && <PrivacyWarning />}
+        {isPublic && !isDemo && <PrivacyWarning />}
         <Outlet />
       </main>
     </div>

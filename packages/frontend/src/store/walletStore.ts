@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Wallet } from '../types';
 
 interface WalletState {
   activeWalletId: number | null;

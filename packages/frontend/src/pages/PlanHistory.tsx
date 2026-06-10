@@ -67,7 +67,7 @@ export default function PlanHistory() {
                 <th>Mode / Urgency</th>
                 <th style={{ textAlign: 'right' }}>Amount</th>
                 <th style={{ textAlign: 'right' }}>Est. Fee</th>
-                <th>Inputs</th>
+                <th>Fee rate</th>
                 <th>Created</th>
                 <th></th>
               </tr>

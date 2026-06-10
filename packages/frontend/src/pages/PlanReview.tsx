@@ -49,8 +49,8 @@ export default function PlanReview() {
           <p>Review every detail before recreating this in your wallet.</p>
         </div>
         <div className="flex gap-2">
-          <a href={jsonUrl} download className="btn btn-secondary btn-sm">⬇ JSON</a>
-          <a href={csvUrl}  download className="btn btn-secondary btn-sm">⬇ CSV</a>
+          <a href={jsonUrl} download className="btn btn-secondary btn-sm" onClick={() => localStorage.setItem('utxo-pilot-exported', '1')}>⬇ JSON</a>
+          <a href={csvUrl}  download className="btn btn-secondary btn-sm" onClick={() => localStorage.setItem('utxo-pilot-exported', '1')}>⬇ CSV</a>
         </div>
       </div>
 

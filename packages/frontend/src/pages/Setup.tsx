@@ -78,17 +78,31 @@ export default function Setup() {
     queryFn: () => api.sync.status(activeWalletId!),
     enabled: !!activeWalletId,
   });
+  const { data: labels = [] } = useQuery({
+    queryKey: ['labels', activeWalletId],
+    queryFn: () => api.labels.list(activeWalletId!),
+    enabled: !!activeWalletId,
+  });
+  const { data: plans = [] } = useQuery({
+    queryKey: ['plans', activeWalletId],
+    queryFn: () => api.plans.list(activeWalletId!),
+    enabled: !!activeWalletId,
+  });
 
   // Derive which steps are complete
-  const hasWallet    = wallets.length > 0;
-  const hasSynced    = !!syncStatus?.synced_at;
+  const hasWallet   = wallets.length > 0;
+  const hasSynced   = !!syncStatus?.synced_at;
+  const hasLabels   = labels.length > 0;
+  const hasPlans    = plans.length > 0;
+  // Export can't be observed server-side (it's a file download) — PlanReview sets this flag on click
+  const hasExported = localStorage.getItem('utxo-pilot-exported') === '1';
   const completed = [
     hasWallet,
     hasWallet, // data source is configured if wallet exists (default is set)
     hasSynced,
-    false,     // labelling — can't auto-detect
-    false,     // planning
-    false,     // export
+    hasLabels,
+    hasPlans,
+    hasExported,
   ];
 
   const nextStep = completed.findIndex((c) => !c);

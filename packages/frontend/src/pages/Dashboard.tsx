@@ -117,7 +117,8 @@ export default function Dashboard() {
         }}>
           <span style={{ fontSize: '1.1rem' }}>🎮</span>
           <div style={{ flex: 1 }}>
-            <strong>Demo mode</strong> — all data is fake and for exploration only. No real funds are involved.
+            <strong>Demo mode</strong> — all data is fake and for exploration only. No real funds are involved,
+            and sync is disabled (there is no real xpub to query).
             {' '}Ready to use real data? <a href="/import" style={{ color: 'var(--accent)' }}>Import your wallet →</a>
           </div>
         </div>
@@ -149,16 +150,6 @@ export default function Dashboard() {
           </button>
         )}
       </div>
-
-      {isDemo && (
-        <div className="alert mb-4" style={{ background: 'rgba(247,147,26,0.08)', borderColor: 'rgba(247,147,26,0.3)' }}>
-          <span>🎮</span>
-          <span>
-            <strong>Sync is not available in demo mode.</strong> The demo wallet uses pre-loaded sample data — there is no real xpub to sync.
-            {' '}<a href="/import" style={{ color: 'var(--accent)' }}>Import your own wallet</a> to use live sync.
-          </span>
-        </div>
-      )}
 
       {!isDemo && isRunning && (
         <div className="alert alert-info mb-4">
